@@ -16,9 +16,6 @@ public_html/storage
 public_html/hot
 
 storage/*.key
-.env
-.env.staging
-.env.production
 .history/
 .phpintel/
 Homestead.yaml
@@ -28,3 +25,4 @@ Homestead.json
 
 # Others
 /keep/
+config.bat
