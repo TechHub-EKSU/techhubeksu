@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerificationController extends Controller
@@ -25,7 +25,15 @@ class VerificationController extends Controller
    *
    * @var string
    */
-  protected $redirectTo = RouteServiceProvider::HOME;
+  public function redirectTo(){
+    $user = User::where('username', auth()->user()->username)->first();
+
+    if($user->isAdmin()) {
+      return '/admin/dashboard';
+    } else {
+      return '/home';
+    }
+  }
 
   /**
    * Create a new controller instance.

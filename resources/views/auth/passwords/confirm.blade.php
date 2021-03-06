@@ -1,46 +1,56 @@
-@extends('layouts.app')
+@extends('dashboard.layouts.app', ['class' => 'off-canvas-sidebar', 'activePage' => 'reset', 'title' => __(config('app.name'))])
+
+@section('pageTitle', __('Confirm Password | ' . config('app.name')))
 
 @section('content')
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">{{ __('Confirm Password') }}</div>
+<div class="container" style="height: auto;">
+  <div class="row align-items-center">
+    <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
+      <form class="form" method="POST" action="{{ route('password.confirm') }}">
+        @csrf
 
-        <div class="card-body">
-          {{ __('Please confirm your password before continuing.') }}
-
-          <form method="POST" action="{{ route('password.confirm') }}">
-            @csrf
-
-            <div class="form-group row">
-              <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-              <div class="col-md-6">
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                @error('password')
-                  <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
+        <div class="card mb-3">
+          <div class="card-header text-center">
+            <h4 class="card-title"><strong>{{ __('Confirm Password') }}</strong></h4>
+          </div>
+          <div class="card-body">
+            <p class="card-description text-center">{{ __('Please confirm your password before continuing.') }}</p>
+            <div class="bmd-form-group{{ $errors->has('password') ? ' has-danger' : '' }}">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">lock_outline</i>
                   </span>
-                @enderror
+                </div>
+                <input type="password" name="password" class="form-control" placeholder="{{ __('Password') }}" value="{{ old('password') }}" required>
               </div>
+              @if ($errors->has('password'))
+                <div id="password-error" class="error text-danger pl-3" for="password" style="display: block;">
+                  <small>{{ $errors->first('password') }}</small>
+                </div>
+              @endif
             </div>
-
-            <div class="form-group row mb-0">
-              <div class="col-md-8 offset-md-4">
-                <button type="submit" class="btn btn-primary">
-                  {{ __('Confirm Password') }}
-                </button>
-
-                @if (Route::has('password.request'))
-                  <a class="btn btn-link" href="{{ route('password.request') }}">
-                    {{ __('Forgot Your Password?') }}
-                  </a>
-                @endif
-              </div>
-            </div>
+          </div>
+          <div class="card-footer justify-content-center">
+            <button type="submit" class="btn btn-light">{{ __('Confirm Password') }}</button>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col-6">
+          @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" class="text-light">
+              <small>{{ __('Forgot password?') }}</small>
+            </a>
+          @endif
+        </div>
+        <div class="col-6 text-right">
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
           </form>
+          <a class="text-light" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+            <small>{{ __('Not ' . auth()->user()->name . '?') }}</small>
+          </a>
         </div>
       </div>
     </div>

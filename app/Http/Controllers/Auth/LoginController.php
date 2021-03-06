@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Helpers\IncludeHelper;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -21,19 +21,37 @@ class LoginController extends Controller
   use AuthenticatesUsers;
 
   /**
+   * Create a new controller instance.
+   *
+   * @param \App\Http\Helpers\IncludeHelper $includeHelper
+   * @return void
+   */
+  public function __construct(IncludeHelper $includeHelper)
+  {
+    $this->helper = $includeHelper;
+    $this->middleware('guest')->except('logout');
+  }
+
+  /**
    * Where to redirect users after login.
    *
    * @var string
    */
-  protected $redirectTo = RouteServiceProvider::HOME;
+  public function authenticated()
+  {
+    return $this->helper->dashboardView('toast_success', __('Welcome! ' . auth()->user()->name . '.'));
+  }
 
   /**
-   * Create a new controller instance.
-   *
-   * @return void
+   *Instance to login with Email or Username
+   * 
+   * @return $field
    */
-  public function __construct()
+  public function username()
   {
-    $this->middleware('guest')->except('logout');
+    $field = (filter_var(request()->email, FILTER_VALIDATE_EMAIL) || !request()->email) ? 'email' : 'username';
+    request()->merge([$field => request()->email]);
+    
+    return $field;
   }
 }

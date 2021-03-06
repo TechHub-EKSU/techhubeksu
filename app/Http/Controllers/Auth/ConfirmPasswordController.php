@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\ConfirmsPasswords;
 
 class ConfirmPasswordController extends Controller
@@ -21,13 +21,6 @@ class ConfirmPasswordController extends Controller
   use ConfirmsPasswords;
 
   /**
-   * Where to redirect users when the intended url fails.
-   *
-   * @var string
-   */
-  protected $redirectTo = RouteServiceProvider::HOME;
-
-  /**
    * Create a new controller instance.
    *
    * @return void
@@ -35,5 +28,20 @@ class ConfirmPasswordController extends Controller
   public function __construct()
   {
     $this->middleware('auth');
+  }
+
+  /**
+   * Where to redirect users when the intended url fails.
+   *
+   * @var string
+   */
+  public function redirectTo(){
+    $user = User::where('username', auth()->user()->username)->first();
+
+    if($user->isAdmin()) {
+      return '/admin/dashboard';
+    } else {
+      return '/home';
+    }
   }
 }

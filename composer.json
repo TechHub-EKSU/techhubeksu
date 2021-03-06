@@ -20,7 +20,6 @@
     "laravelcollective/errors": "^1.1",
     "realrashid/sweet-alert": "^3.2",
     "silviolleite/laravelpwa": "^2.0",
-    "spatie/laravel-sitemap": "^5.8",
     "unicodeveloper/laravel-paystack": "^1.0"
   },
   "require-dev": {

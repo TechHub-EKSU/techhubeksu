@@ -1,70 +1,77 @@
-@extends('layouts.app')
+@extends('dashboard.layouts.app', ['class' => 'off-canvas-sidebar', 'activePage' => 'login', 'title' => __(config('app.name'))])
+
+@section('pageTitle', __('Login | ' . config('app.name')))
 
 @section('content')
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card">
-        <div class="card-header">{{ __('Login') }}</div>
+<div class="container" style="height: auto;">
+  <div class="row align-items-center">
+    <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
+      <form class="form" method="POST" action="{{ route('login') }}">
+        @csrf
 
-        <div class="card-body">
-          <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <div class="form-group row">
-              <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-              <div class="col-md-6">
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                @error('email')
-                  <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
+        <div class="card mb-3">
+          <div class="card-header text-center">
+            <p><a href="{{ url('auth/facebook') }}"><img src="{{ asset('assets/images/web/brand/facebook_login.png') }}" alt="Login with Facebook" width="90%"></a></p>
+            <p><a href="{{ url('auth/google') }}"><img src="{{ asset('assets/images/web/brand/google_login.png') }}" alt="Sign in with Google" width="90%"></a></p>
+          </div>
+          <div class="card-body">
+            <p class="card-description text-center">{{ __('Or Sign in with your credentials') }}</p>
+            <div class="bmd-form-group @if($errors->has('email') || $errors->has('username')) has-danger @endif">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">face</i>
                   </span>
-                @enderror
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-              <div class="col-md-6">
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                @error('password')
-                  <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                  </span>
-                @enderror
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-md-6 offset-md-4">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                  <label class="form-check-label" for="remember">
-                    {{ __('Remember Me') }}
-                  </label>
                 </div>
+                <input type="text" name="email" class="form-control" placeholder="{{ __('Username or Email Address...') }}" value="{{ old('email') }}">
               </div>
+              @if ($errors->has('email') || $errors->has('username'))
+                <div class="error text-danger pl-3" for="email" style="display: block;">
+                  <small>{{$errors->first('email') }} {{ $errors->first('username')}}</small>
+                </div>
+              @endif
             </div>
-
-            <div class="form-group row mb-0">
-              <div class="col-md-8 offset-md-4">
-                <button type="submit" class="btn btn-primary">
-                  {{ __('Login') }}
-                </button>
-
-                @if (Route::has('password.request'))
-                  <a class="btn btn-link" href="{{ route('password.request') }}">
-                    {{ __('Forgot Your Password?') }}
-                  </a>
-                @endif
+            <div class="bmd-form-group{{ $errors->has('password') ? ' has-danger' : '' }} mt-3">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="material-icons">lock_outline</i>
+                  </span>
+                </div>
+                <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Password...') }}" value="{{ old('password') }}">
               </div>
+              @if ($errors->has('password'))
+                <div class="error text-danger pl-3" for="password" style="display: block;">
+                  <small>{{ $errors->first('password') }}</small>
+                </div>
+              @endif
             </div>
-          </form>
+            <div class="form-check mr-auto ml-3 mt-3">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> {{ __('Remember me') }}
+                <span class="form-check-sign">
+                  <span class="check"></span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="card-footer justify-content-center">
+            <button type="submit" class="btn btn-light">{{ __('Lets Go') }}</button>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col-6">
+          @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" class="text-light">
+              <small>{{ __('Forgot password?') }}</small>
+            </a>
+          @endif
+        </div>
+        <div class="col-6 text-right">
+          <a href="{{ route('register') }}" class="text-light">
+            <small>{{ __('Create new account') }}</small>
+          </a>
         </div>
       </div>
     </div>
